@@ -1,0 +1,30 @@
+<form id="login-form">
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <button type="submit">Login</button>
+  <div id="login-error" style="color:red;"></div>
+</form>
+<script>
+  const loginForm = document.getElementById('login-form');
+  loginForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    try {
+      // Replace URL with your backend login API
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ email, password })
+      });
+      if (!response.ok) throw new Error('Login failed');
+      const data = await response.json();
+      localStorage.setItem('authToken', data.token);
+      alert('Login successful!');
+      // Redirect or load dashboard
+    } catch (err) {
+      document.getElementById('login-error').innerText = err.message;
+    }
+  });
+</script>

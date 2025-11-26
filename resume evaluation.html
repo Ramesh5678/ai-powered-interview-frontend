@@ -1,0 +1,28 @@
+<input type="file" id="resume-upload" accept=".pdf,.doc,.docx" />
+<button id="eval-resume-btn">Evaluate Resume</button>
+<div id="resume-result"></div>
+<script>
+  document.getElementById('eval-resume-btn').addEventListener('click', async () => {
+    const fileInput = document.getElementById('resume-upload');
+    if (fileInput.files.length === 0) {
+      alert('Please upload a resume file.');
+      return;
+    }
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('resume', file);
+
+    try {
+      // Replace URL with your backend resume evaluation API
+      const response = await fetch('/api/resume-evaluate', {
+        method: 'POST',
+        body: formData
+      });
+      if (!response.ok) throw new Error('Evaluation failed');
+      const result = await response.json();
+      document.getElementById('resume-result').innerText = `Score: ${result.score}\nFeedback: ${result.feedback}`;
+    } catch (err) {
+      document.getElementById('resume-result').innerText = err.message;
+    }
+  });
+</script>
